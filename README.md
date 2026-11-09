@@ -53,7 +53,7 @@ Asegúrate de que tu archivo `appsettings.json` tenga la cadena de conexión apu
     "Secret": "EstaEsUnaClaveSecretaSuperSeguraDeMasDe32CaracteresParaEvitarErroresJWT123!",
     "Issuer": "UserManagementApi",
     "Audience": "UserManagementClient",
-    "DurationInMinutes": 60
+    "ExpirationHours": 8
   },
   "Logging": {
     "LogLevel": {
@@ -72,11 +72,11 @@ Ejecuta el proyecto con el comando:
 dotnet run
 ```
 
-La API estará corriendo en `http://localhost:5000` (o el puerto asignado por tu entorno) y podrás acceder a la documentación de Swagger en `http://localhost:5000/swagger`.
+La API estará corriendo en `http://localhost:5109` (o el puerto asignado por tu entorno) y podrás acceder a la documentación de Swagger en `http://localhost:5109/swagger`.
 
 ---
 
-## 📊 Modelo Entidad-Relación (ER)
+## Modelo Entidad-Relación (ER)
 
 El sistema gestiona usuarios, roles y una tabla intermedia para soportar relaciones de muchos a muchos (*Many-to-Many*), permitiendo que un usuario posea múltiples roles.
 
@@ -113,15 +113,25 @@ El sistema gestiona usuarios, roles y una tabla intermedia para soportar relacio
 
 ---
 
-## 🔌 Endpoints Principales
+##  Endpoints Principales
 
-| Método | Endpoint | Descripción | Acceso |
+| Método | Endpoint | Permiso Requerido | Descripción |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/api/auth/login` | Inicia sesión y devuelve un token JWT. | Público (`AllowAnonymous`) |
-| `POST` | `/api/users/register` | Registra un nuevo usuario en el sistema. | `SuperAdmin` |
-| `GET` | `/api/users` | Lista todos los usuarios con sus roles asociados. | `SuperAdmin`, `Admin` |
+| **POST** | `/api/auth/login` | Público | Autentica credenciales y devuelve el Token JWT. |
+| **GET** | `/api/auth/me` | Autenticado | Devuelve los claims y datos del usuario actual logueado. |
+| **GET** | `/api/users` | Admin / SuperAdmin | Lista todos los usuarios con sus respectivos roles. |
+| **GET** | `/api/users/{id}` | Admin / SuperAdmin | Obtiene el detalle de un usuario específico. |
+| **POST** | `/api/users` | SuperAdmin | Crea un nuevo usuario y le asigna el rol base. |
+| **PUT** | `/api/users/{id}` | SuperAdmin | Actualiza los datos de un usuario. |
+| **DELETE** | `/api/users/{id}` | SuperAdmin | Elimina un usuario del sistema. |
+| **GET** | `/api/roles` | Autenticado | Lista los roles disponibles en el sistema. |
+| **POST** | `/api/roles` | SuperAdmin | Crea un nuevo rol. |
+| **POST** | `/api/users/{id}/roles/{roleId}` | SuperAdmin | Asigna un rol específico a un usuario. |
+| **DELETE** | `/api/users/{id}/roles/{roleId}` | SuperAdmin | Remueve un rol específico de un usuario. |
 
 ---
 
-## 🛡️ Contribución y Autor
+---
+
+## Contribución y Autor
 Desarrollado como parte de un ecosistema de microservicios y APIs REST seguras en .NET.
